@@ -556,28 +556,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Consumer Key</label>
-                    <input 
-                      type="text" 
-                      value={consKey}
-                      onChange={(e) => setConsKey(e.target.value)}
-                      placeholder="Daraja App Consumer Key" 
-                      className="w-full text-sm border border-slate-200 rounded-lg p-3 bg-slate-50 outline-none focus:bg-white focus:border-green-500 transition-all"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Consumer Secret</label>
-                    <input 
-                      type="password" 
-                      value={consSec}
-                      onChange={(e) => setConsSec(e.target.value)}
-                      placeholder="Daraja App Consumer Secret" 
-                      className="w-full text-sm border border-slate-200 rounded-lg p-3 bg-slate-50 outline-none focus:bg-white focus:border-green-500 transition-all"
-                    />
-                  </div>
-                </div>
+
               </div>
 
               {/* AIRTEL MONEY CONFIG */}
@@ -1369,14 +1348,14 @@ export default function Dashboard() {
                   </div>
 
                   <form onSubmit={(e) => handleOnboardingSubmit(e, false)} className="p-6 space-y-6" id="settings-form">
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">M-Pesa Shortcode</label>
                         <input 
                           type="text" 
                           value={shortcode}
                           onChange={(e) => setShortcode(e.target.value)}
-                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none"
+                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none focus:border-green-500 focus:bg-white transition-all bg-slate-50/50"
                         />
                       </div>
                       <div className="space-y-1">
@@ -1384,34 +1363,25 @@ export default function Dashboard() {
                         <select 
                           value={mpesaType}
                           onChange={(e) => setMpesaType(e.target.value as any)}
-                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none"
+                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none focus:border-green-500 focus:bg-white transition-all bg-slate-50/50"
                         >
-                          <option value="till">BuyGoods Till</option>
-                          <option value="paybill">PayBill online</option>
+                          <option value="till">BuyGoods Till Number</option>
+                          <option value="paybill">PayBill online shortcode</option>
                         </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Daraja Passkey</label>
+                        <input 
+                          type="password" 
+                          value={passkey}
+                          onChange={(e) => setPasskey(e.target.value)}
+                          placeholder="bfb279f9aa9bdbcf..."
+                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none focus:border-green-500 focus:bg-white transition-all bg-slate-50/50"
+                        />
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Consumer Key</label>
-                        <input 
-                          type="text" 
-                          value={consKey}
-                          onChange={(e) => setConsKey(e.target.value)}
-                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Consumer Secret</label>
-                        <input 
-                          type="password" 
-                          value={consSec}
-                          onChange={(e) => setConsSec(e.target.value)}
-                          className="w-full text-sm border border-slate-200 rounded-lg p-3 outline-none"
-                        />
-                      </div>
-                    </div>
+
 
                     <div className="grid md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
                       <div className="space-y-1">
