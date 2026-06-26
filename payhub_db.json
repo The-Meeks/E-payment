@@ -1,0 +1,427 @@
+{
+  "users": [
+    {
+      "id": "usr_admin",
+      "email": "admin@payhub.co.ke",
+      "passwordHash": "admin123",
+      "firstName": "Dominic",
+      "lastName": "Kiprop",
+      "role": "admin",
+      "status": "active",
+      "createdAt": "2026-05-27T16:45:47.771Z",
+      "updatedAt": "2026-05-27T16:45:47.771Z"
+    },
+    {
+      "id": "usr_merchant_abc",
+      "email": "merchant@payhub.co.ke",
+      "passwordHash": "merchant123",
+      "firstName": "Nelly",
+      "lastName": "Mutua",
+      "role": "merchant",
+      "status": "active",
+      "createdAt": "2026-06-11T16:45:47.771Z",
+      "updatedAt": "2026-06-11T16:45:47.771Z"
+    },
+    {
+      "id": "usr_merchant_xyz",
+      "email": "fashion@payhub.co.ke",
+      "passwordHash": "fashion123",
+      "firstName": "Brian",
+      "lastName": "Ondego",
+      "role": "merchant",
+      "status": "active",
+      "createdAt": "2026-06-23T16:45:47.771Z",
+      "updatedAt": "2026-06-23T16:45:47.771Z"
+    },
+    {
+      "id": "usr_staff_cashier",
+      "email": "cashier@abcelectronics.co.ke",
+      "passwordHash": "cashier123",
+      "firstName": "John",
+      "lastName": "Kamau",
+      "role": "staff",
+      "status": "active",
+      "createdAt": "2026-06-16T16:45:47.771Z",
+      "updatedAt": "2026-06-16T16:45:47.771Z"
+    }
+  ],
+  "merchants": [
+    {
+      "id": "mer_abc",
+      "ownerId": "usr_merchant_abc",
+      "merchantCode": "ABC",
+      "status": "approved",
+      "createdAt": "2026-06-11T16:45:47.771Z",
+      "updatedAt": "2026-06-12T16:45:47.771Z"
+    },
+    {
+      "id": "mer_xyz",
+      "ownerId": "usr_merchant_xyz",
+      "merchantCode": "XYZ",
+      "status": "submitted",
+      "createdAt": "2026-06-23T16:45:47.771Z",
+      "updatedAt": "2026-06-23T16:45:47.771Z"
+    }
+  ],
+  "merchantProfiles": [
+    {
+      "id": "prof_abc",
+      "merchantId": "mer_abc",
+      "businessName": "ABC Electronics Ltd",
+      "businessCategory": "Electronics & IT",
+      "businessType": "Retailer",
+      "description": "Your premium partner for high-end electronic gadgets, computer accessories, and mobile hardware solutions in Nairobi.",
+      "county": "Nairobi",
+      "city": "Nairobi",
+      "physicalAddress": "Luthuli Avenue, Junction Plaza Shop 14G",
+      "businessEmail": "info@abcelectronics.co.ke",
+      "businessPhone": "+254712345678",
+      "logoUrl": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=128&auto=format&fit=crop&q=80",
+      "mpesaShortcode": "174379",
+      "mpesaType": "till",
+      "mpesaConsumerKey": "Zib6dB46AGYkcJCcElwgaZ4T8AEJG3wyD5ACtRT1K0vA1EGo",
+      "mpesaConsumerSecret": "YYO4gAPjunvBB4U2IqOZZG4iAn6M1fPu0CMKzmbANaX1JmVUiRjSw1SUXrqrxLxg",
+      "mpesaPasskey": "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",
+      "airtelMerchantId": "987654321",
+      "airtelClientId": "client_abc_987",
+      "airtelClientSecret": "secret_abc_123_xyz",
+      "themeColor": "#16A34A",
+      "receiptFooter": "Thank you for shopping with ABC Electronics! PayHub Direct Settlement.",
+      "createdAt": "2026-06-11T16:45:47.771Z",
+      "updatedAt": "2026-06-12T16:45:47.771Z"
+    },
+    {
+      "id": "prof_xyz",
+      "merchantId": "mer_xyz",
+      "businessName": "XYZ Boutique & Fashion House",
+      "businessCategory": "Clothing & Apparel",
+      "businessType": "Sole Proprietor",
+      "description": "Handcrafted African designer wear, modern urban collections, and custom tailors in Mombasa.",
+      "county": "Mombasa",
+      "city": "Mombasa",
+      "physicalAddress": "Nyali Center, 1st Floor Shop 3B",
+      "businessEmail": "sales@xyzboutique.co.ke",
+      "businessPhone": "+254722334455",
+      "logoUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=128&auto=format&fit=crop&q=80",
+      "mpesaShortcode": "174380",
+      "mpesaType": "paybill",
+      "mpesaConsumerKey": "key_xyz_998",
+      "mpesaConsumerSecret": "sec_xyz_776",
+      "mpesaPasskey": "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",
+      "airtelMerchantId": "11223344",
+      "airtelClientId": "client_xyz_221",
+      "airtelClientSecret": "secret_xyz_887",
+      "themeColor": "#4F46E5",
+      "receiptFooter": "Style speaks! Thank you for buying from XYZ Boutique.",
+      "createdAt": "2026-06-23T16:45:47.771Z",
+      "updatedAt": "2026-06-23T16:45:47.771Z"
+    }
+  ],
+  "merchantStaff": [
+    {
+      "id": "stf_abc_owner",
+      "merchantId": "mer_abc",
+      "userId": "usr_merchant_abc",
+      "role": "owner",
+      "permissions": [
+        "all_permissions"
+      ],
+      "status": "active",
+      "invitedAt": "2026-06-11T16:45:47.771Z",
+      "acceptedAt": "2026-06-11T16:45:47.771Z"
+    },
+    {
+      "id": "stf_abc_cashier",
+      "merchantId": "mer_abc",
+      "userId": "usr_staff_cashier",
+      "role": "cashier",
+      "permissions": [
+        "view_transactions",
+        "receive_payments"
+      ],
+      "status": "active",
+      "invitedAt": "2026-06-16T16:45:47.771Z",
+      "acceptedAt": "2026-06-16T16:45:47.771Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx_001",
+      "merchantId": "mer_abc",
+      "customerPhone": "254711223344",
+      "customerReference": "INV-2026-001",
+      "amount": 1500,
+      "paymentMethod": "mpesa",
+      "status": "successful",
+      "receiptNumber": "SLK9A8F5H1",
+      "checkoutRequestId": "ws_CO_260620261122334455",
+      "merchantRequestId": "12345-67890-11",
+      "responseDescription": "Success",
+      "callbackResponse": {
+        "ResultCode": 0,
+        "ResultDesc": "The service request is processed successfully."
+      },
+      "createdAt": "2026-06-20T16:45:47.771Z",
+      "completedAt": "2026-06-20T16:45:47.771Z"
+    },
+    {
+      "id": "tx_002",
+      "merchantId": "mer_abc",
+      "customerPhone": "254722334455",
+      "customerReference": "INV-2026-002",
+      "amount": 4500,
+      "paymentMethod": "mpesa",
+      "status": "successful",
+      "receiptNumber": "SLK9D8C2S8",
+      "checkoutRequestId": "ws_CO_260620262233445566",
+      "merchantRequestId": "12345-67890-12",
+      "responseDescription": "Success",
+      "callbackResponse": {
+        "ResultCode": 0,
+        "ResultDesc": "Success"
+      },
+      "createdAt": "2026-06-21T16:45:47.771Z",
+      "completedAt": "2026-06-21T16:45:47.771Z"
+    },
+    {
+      "id": "tx_003",
+      "merchantId": "mer_abc",
+      "customerPhone": "254712345678",
+      "customerReference": "INV-2026-003",
+      "amount": 12000,
+      "paymentMethod": "airtel",
+      "status": "successful",
+      "receiptNumber": "AM12345678",
+      "checkoutRequestId": "airtel_chk_8829910",
+      "merchantRequestId": null,
+      "responseDescription": "Success",
+      "callbackResponse": {
+        "status": "SUCCESS"
+      },
+      "createdAt": "2026-06-22T16:45:47.771Z",
+      "completedAt": "2026-06-22T16:45:47.771Z"
+    },
+    {
+      "id": "tx_004",
+      "merchantId": "mer_abc",
+      "customerPhone": "254788776655",
+      "customerReference": "INV-2026-004",
+      "amount": 3200,
+      "paymentMethod": "mpesa",
+      "status": "failed",
+      "receiptNumber": null,
+      "checkoutRequestId": "ws_CO_260620263344556677",
+      "merchantRequestId": "12345-67890-13",
+      "responseDescription": "Request cancelled by user",
+      "callbackResponse": {
+        "ResultCode": 1032,
+        "ResultDesc": "Request cancelled by user"
+      },
+      "createdAt": "2026-06-23T16:45:47.771Z",
+      "completedAt": "2026-06-23T16:45:47.771Z"
+    },
+    {
+      "id": "tx_005",
+      "merchantId": "mer_abc",
+      "customerPhone": "254799887766",
+      "customerReference": "INV-2026-005",
+      "amount": 9500,
+      "paymentMethod": "mpesa",
+      "status": "successful",
+      "receiptNumber": "SLK3K8D2K0",
+      "checkoutRequestId": "ws_CO_260620264455667788",
+      "merchantRequestId": "12345-67890-14",
+      "responseDescription": "Success",
+      "callbackResponse": {
+        "ResultCode": 0,
+        "ResultDesc": "Success"
+      },
+      "createdAt": "2026-06-24T16:45:47.771Z",
+      "completedAt": "2026-06-24T16:45:47.771Z"
+    },
+    {
+      "id": "tx_006",
+      "merchantId": "mer_abc",
+      "customerPhone": "254711223344",
+      "customerReference": "INV-2026-006",
+      "amount": 500,
+      "paymentMethod": "mpesa",
+      "status": "successful",
+      "receiptNumber": "SLK4X8M2T7",
+      "checkoutRequestId": "ws_CO_260620265566778899",
+      "merchantRequestId": "12345-67890-15",
+      "responseDescription": "Success",
+      "callbackResponse": {
+        "ResultCode": 0,
+        "ResultDesc": "Success"
+      },
+      "createdAt": "2026-06-25T16:45:47.771Z",
+      "completedAt": "2026-06-25T16:45:47.771Z"
+    },
+    {
+      "id": "tx_007",
+      "merchantId": "mer_abc",
+      "customerPhone": "254722556677",
+      "customerReference": "INV-2026-007",
+      "amount": 150,
+      "paymentMethod": "airtel",
+      "status": "successful",
+      "receiptNumber": "AM29837190",
+      "checkoutRequestId": "airtel_chk_8821038",
+      "merchantRequestId": null,
+      "responseDescription": "Success",
+      "callbackResponse": {
+        "status": "SUCCESS"
+      },
+      "createdAt": "2026-06-26T16:45:47.771Z",
+      "completedAt": "2026-06-26T16:45:47.771Z"
+    },
+    {
+      "id": "tx_008",
+      "merchantId": "mer_abc",
+      "customerPhone": "254712332211",
+      "customerReference": "INV-2026-008",
+      "amount": 8000,
+      "paymentMethod": "mpesa",
+      "status": "processing",
+      "receiptNumber": null,
+      "checkoutRequestId": "ws_CO_260620266677889900",
+      "merchantRequestId": "12345-67890-16",
+      "responseDescription": "Initiated",
+      "callbackResponse": null,
+      "createdAt": "2026-06-26T16:45:47.771Z",
+      "completedAt": null
+    }
+  ],
+  "notifications": [
+    {
+      "id": "ntf_1",
+      "userId": "usr_merchant_abc",
+      "title": "Merchant Approved",
+      "message": "Congratulations! Your merchant profile for ABC Electronics Ltd has been approved. You are now live and can receive payments.",
+      "isRead": false,
+      "type": "success",
+      "createdAt": "2026-06-12T16:45:47.771Z"
+    },
+    {
+      "id": "ntf_2",
+      "userId": "usr_merchant_abc",
+      "title": "Payment Received",
+      "message": "You have received a payment of KES 9,500 via M-Pesa. Customer Reference: INV-2026-005.",
+      "isRead": false,
+      "type": "info",
+      "createdAt": "2026-06-24T16:45:47.771Z"
+    },
+    {
+      "id": "ntf_3",
+      "userId": "all",
+      "title": "PayHub Platform Upgrade",
+      "message": "We will be conducting brief infrastructure maintenance on Sunday 2 AM to 3 AM UTC. There will be minimal downtime.",
+      "isRead": false,
+      "type": "system",
+      "createdAt": "2026-06-25T16:45:47.771Z"
+    }
+  ],
+  "activityLogs": [
+    {
+      "id": "act_1",
+      "userId": "usr_merchant_abc",
+      "userEmail": "merchant@payhub.co.ke",
+      "action": "Business Profile Updates",
+      "details": "Updated business logo and email address.",
+      "ipAddress": "197.237.12.18",
+      "device": "Mac OS / Chrome Browser",
+      "createdAt": "2026-06-12T16:45:47.771Z"
+    },
+    {
+      "id": "act_2",
+      "userId": "usr_merchant_abc",
+      "userEmail": "merchant@payhub.co.ke",
+      "action": "Payment Configuration Changes",
+      "details": "Saved M-Pesa Daraja Credentials and Airtel merchant codes.",
+      "ipAddress": "197.237.12.18",
+      "device": "Mac OS / Chrome Browser",
+      "createdAt": "2026-06-12T16:45:47.771Z"
+    }
+  ],
+  "supportTickets": [
+    {
+      "id": "tkt_001",
+      "merchantId": "mer_abc",
+      "subject": "Clarification regarding Daraja Sandbox limits",
+      "description": "Hi support team, is there a transaction amount limit on the Daraja sandbox? We are receiving error 500 when pushing transactions above KES 150,000.",
+      "status": "open",
+      "priority": "medium",
+      "createdAt": "2026-06-21T16:45:47.771Z",
+      "updatedAt": "2026-06-22T16:45:47.771Z"
+    }
+  ],
+  "ticketMessages": [
+    {
+      "id": "tmsg_1",
+      "ticketId": "tkt_001",
+      "senderId": "usr_merchant_abc",
+      "senderName": "Nelly Mutua",
+      "senderRole": "merchant",
+      "message": "Hi support team, is there a transaction amount limit on the Daraja sandbox? We are receiving error 500 when pushing transactions above KES 150,000.",
+      "createdAt": "2026-06-21T16:45:47.771Z"
+    },
+    {
+      "id": "tmsg_2",
+      "ticketId": "tkt_001",
+      "senderId": "usr_admin",
+      "senderName": "Dominic Kiprop",
+      "senderRole": "admin",
+      "message": "Hello Nelly, yes, Safaricom Daraja Sandbox caps transaction amounts to KES 70,000 per transaction and a daily limit of KES 300,000. Please test with smaller values such as KES 10, 50, or 100.",
+      "createdAt": "2026-06-22T16:45:47.771Z"
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq_1",
+      "question": "What is the Direct Settlement Model?",
+      "answer": "The Direct Settlement Model means customer payments go directly from their phone into your registered M-Pesa shortcode (Till or PayBill) or Airtel Money account. PayHub only facilitates the initiation and callback tracking. We NEVER hold your money, ensuring instant liquidity.",
+      "isPublished": true,
+      "createdAt": "2026-06-06T16:45:47.771Z",
+      "updatedAt": "2026-06-06T16:45:47.771Z"
+    },
+    {
+      "id": "faq_2",
+      "question": "What M-Pesa credentials do I need for live payments?",
+      "answer": "To receive payments via M-Pesa, you will need a Daraja developer account. You will then input your Shortcode, Shortcode Type (Till or PayBill), Consumer Key, Consumer Secret, and Passkey into the PayHub payment configurations panel.",
+      "isPublished": true,
+      "createdAt": "2026-06-06T16:45:47.771Z",
+      "updatedAt": "2026-06-06T16:45:47.771Z"
+    },
+    {
+      "id": "faq_3",
+      "question": "Does PayHub have access to our customers' mobile money PINs?",
+      "answer": "Absolutely not. PayHub triggers an STK Push (Simulated SIM Tool Kit) payment. The prompt to enter a mobile money PIN is generated natively on the customer's handset by Safaricom or Airtel. Customers should NEVER enter their PINs on any web page.",
+      "isPublished": true,
+      "createdAt": "2026-06-06T16:45:47.771Z",
+      "updatedAt": "2026-06-06T16:45:47.771Z"
+    },
+    {
+      "id": "faq_4",
+      "question": "What is the transaction flow for Airtel Money payments?",
+      "answer": "When a customer selects Airtel Money, PayHub initiates an Airtel Money Payment API push request. The customer receives an overlay prompt on their phone to enter their Airtel PIN, settling funds instantly into your Airtel Merchant Account.",
+      "isPublished": true,
+      "createdAt": "2026-06-16T16:45:47.771Z",
+      "updatedAt": "2026-06-16T16:45:47.771Z"
+    }
+  ],
+  "systemSettings": {
+    "platformName": "PayHub Kenya",
+    "platformLogo": "https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=128&auto=format&fit=crop&q=80",
+    "supportEmail": "support@payhub.co.ke",
+    "supportPhone": "+254 700 000 000",
+    "defaultCountry": "Kenya",
+    "defaultCurrency": "KES",
+    "defaultTimezone": "EAT (GMT+3)",
+    "maintenanceMode": false,
+    "registrationEnabled": true,
+    "merchantApprovalRequired": true,
+    "primaryColor": "#16A34A",
+    "secondaryColor": "#0F172A"
+  }
+}

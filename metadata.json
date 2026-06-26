@@ -1,0 +1,6 @@
+{
+  "name": "PayHub",
+  "description": "A modern multi-tenant payment gateway facilitating M-Pesa STK Push and Airtel Money direct settlements in Kenya.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
