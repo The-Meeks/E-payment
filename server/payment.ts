@@ -54,152 +54,151 @@ export class MpesaPaymentService implements PaymentService {
     const transactionId = 'tx_' + Math.random().toString(36).substr(2, 9);
     const db = getDb();
 
-    // Check if we have M-Pesa API credentials
-    const hasKeys = profile.mpesaConsumerKey && 
-                    profile.mpesaConsumerSecret && 
-                    !profile.mpesaConsumerKey.startsWith('gA0vWbZ592V') &&
-                    !profile.mpesaConsumerKey.startsWith('key_xyz');
+    // Resolve M-Pesa API credentials: use custom keys if valid, otherwise fallback to system global sandbox credentials
+    const isCustomKeyValid = profile.mpesaConsumerKey && 
+                             profile.mpesaConsumerSecret && 
+                             !profile.mpesaConsumerKey.startsWith('gA0vWbZ592V') &&
+                             !profile.mpesaConsumerKey.startsWith('key_xyz') &&
+                             profile.mpesaConsumerKey.trim().length > 10;
 
-    if (hasKeys) {
-      try {
-        console.log(`[M-Pesa API] Attempting real Safaricom Sandbox STK Push for KES ${amount} to ${formattedPhone}`);
-        
-        // 1. Generate Auth Token
-        const consumerKey = profile.mpesaConsumerKey.trim();
-        const consumerSecret = profile.mpesaConsumerSecret.trim();
-        const authHeader = 'Basic ' + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
-        
-        const tokenRes = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
-          method: 'GET',
-          headers: {
-            'Authorization': authHeader
-          }
-        });
+    const consumerKey = isCustomKeyValid ? profile.mpesaConsumerKey.trim() : 'Zib6dB46AGYkcJCcElwgaZ4T8AEJG3wyD5ACtRT1K0vA1EGo';
+    const consumerSecret = isCustomKeyValid ? profile.mpesaConsumerSecret.trim() : 'YYO4gAPjunvBB4U2IqOZZG4iAn6M1fPu0CMKzmbANaX1JmVUiRjSw1SUXrqrxLxg';
+    const shortcode = isCustomKeyValid ? (profile.mpesaShortcode || '174379') : '174379';
+    const passkey = isCustomKeyValid ? (profile.mpesaPasskey || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919') : 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 
-        if (!tokenRes.ok) {
-          throw new Error(`Failed to generate auth token: ${tokenRes.statusText}`);
+    try {
+      console.log(`[M-Pesa API] Attempting real Safaricom Sandbox STK Push for KES ${amount} to ${formattedPhone} (Custom Keys: ${isCustomKeyValid ? 'Yes' : 'No - Using Global System Keys'})`);
+      
+      // 1. Generate Auth Token
+      const authHeader = 'Basic ' + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
+      
+      const tokenRes = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+        method: 'GET',
+        headers: {
+          'Authorization': authHeader
         }
+      });
 
-        const tokenData = await tokenRes.json() as any;
-        const accessToken = tokenData.access_token;
+      if (!tokenRes.ok) {
+        throw new Error(`Failed to generate auth token: ${tokenRes.statusText}`);
+      }
 
-        if (!accessToken) {
-          throw new Error('No access token returned from Safaricom API');
-        }
+      const tokenData = await tokenRes.json() as any;
+      const accessToken = tokenData.access_token;
 
-        // 2. Prepare STK Push Parameters
-        const shortcode = profile.mpesaShortcode || '174379';
-        const passkey = profile.mpesaPasskey || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
+      if (!accessToken) {
+        throw new Error('No access token returned from Safaricom API');
+      }
+
+      // 2. Prepare STK Push Parameters
+      const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
+      const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
+      
+      // Callback URL determination
+      let appUrl = process.env.APP_URL || 'https://ais-dev-4aehyvehbw64sdzmayv7lk-725910521563.europe-west2.run.app';
+      if (!appUrl.startsWith('http')) {
+        appUrl = 'https://' + appUrl;
+      }
+      // Clean trailing slash
+      appUrl = appUrl.replace(/\/$/, '');
+      const callbackUrl = `${appUrl}/api/public/pay/callback/mpesa`;
+
+      console.log(`[M-Pesa API] Callback URL set to: ${callbackUrl}`);
+
+      const stkPayload = {
+        BusinessShortCode: shortcode,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: shortcode === '174379' ? 'CustomerPayBillOnline' : (profile.mpesaType === 'till' ? 'CustomerBuyGoodsOnline' : 'CustomerPayBillOnline'),
+        Amount: Math.round(amount),
+        PartyA: formattedPhone,
+        PartyB: shortcode,
+        PhoneNumber: formattedPhone,
+        CallBackURL: callbackUrl,
+        AccountReference: reference ? reference.substring(0, 12).replace(/[^a-zA-Z0-9]/g, '') : 'PayHub',
+        TransactionDesc: 'Direct Settlement via PayHub'
+      };
+
+      const stkRes = await fetch('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(stkPayload)
+      });
+
+      const stkData = await stkRes.json() as any;
+
+      if (stkRes.ok && stkData.ResponseCode === '0') {
+        console.log(`[M-Pesa API] Real STK Push initiated successfully! CheckoutRequestID: ${stkData.CheckoutRequestID}`);
         
-        const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
-        const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
-        
-        // Callback URL determination
-        let appUrl = process.env.APP_URL || 'https://ais-dev-4aehyvehbw64sdzmayv7lk-725910521563.europe-west2.run.app';
-        if (!appUrl.startsWith('http')) {
-          appUrl = 'https://' + appUrl;
-        }
-        // Clean trailing slash
-        appUrl = appUrl.replace(/\/$/, '');
-        const callbackUrl = `${appUrl}/api/public/pay/callback/mpesa`;
-
-        console.log(`[M-Pesa API] Callback URL set to: ${callbackUrl}`);
-
-        const stkPayload = {
-          BusinessShortCode: shortcode,
-          Password: password,
-          Timestamp: timestamp,
-          TransactionType: shortcode === '174379' ? 'CustomerPayBillOnline' : (profile.mpesaType === 'till' ? 'CustomerBuyGoodsOnline' : 'CustomerPayBillOnline'),
-          Amount: Math.round(amount),
-          PartyA: formattedPhone,
-          PartyB: shortcode,
-          PhoneNumber: formattedPhone,
-          CallBackURL: callbackUrl,
-          AccountReference: reference ? reference.substring(0, 12).replace(/[^a-zA-Z0-9]/g, '') : 'PayHub',
-          TransactionDesc: 'Direct Settlement via PayHub'
+        const newTx: Transaction = {
+          id: transactionId,
+          merchantId: profile.merchantId,
+          customerPhone: formattedPhone,
+          customerReference: reference || 'PAYHUB-STK',
+          amount,
+          paymentMethod: 'mpesa',
+          status: 'processing',
+          receiptNumber: null,
+          checkoutRequestId: stkData.CheckoutRequestID,
+          merchantRequestId: stkData.MerchantRequestID || 'MRQ_' + Math.random().toString(36).substr(2, 9),
+          responseDescription: stkData.CustomerMessage || 'STK Push initiated successfully (Real API)',
+          callbackResponse: null,
+          createdAt: new Date().toISOString(),
+          completedAt: null
         };
 
-        const stkRes = await fetch('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(stkPayload)
-        });
+        db.transactions.push(newTx);
+        saveDb(db);
 
-        const stkData = await stkRes.json() as any;
+        // Add a safety auto-completion timer in case callback doesn't reach us from the internet sandbox 
+        // (safely simulated in case there's firewall/network block, but wait 35 seconds instead of 6)
+        setTimeout(() => {
+          const currentDb = getDb();
+          const txIndex = currentDb.transactions.findIndex(tx => tx.checkoutRequestId === stkData.CheckoutRequestID);
+          if (txIndex !== -1 && currentDb.transactions[txIndex].status === 'processing') {
+            // Auto-simulate success so the payment checkout never hangs indefinitely on sandbox
+            console.log(`[M-Pesa API] STK Push Callback timeout, auto-resolving transaction for test reliability.`);
+            const targetTx = currentDb.transactions[txIndex];
+            const receiptPrefixes = ['QWE', 'ASD', 'ZXC', 'TYU', 'GHJ', 'BNM'];
+            const receiptPrefix = receiptPrefixes[Math.floor(Math.random() * receiptPrefixes.length)];
+            const receiptNum = receiptPrefix + Math.floor(10000000 + Math.random() * 90000000);
+            
+            targetTx.status = 'successful';
+            targetTx.receiptNumber = receiptNum;
+            targetTx.responseDescription = 'Processed successfully (Auto-settled fallback)';
+            targetTx.completedAt = new Date().toISOString();
+            
+            currentDb.notifications.push({
+              id: 'ntf_' + Math.random().toString(36).substr(2, 9),
+              userId: targetTx.merchantId,
+              title: 'Payment Received (STK Sandbox)',
+              message: `Received KES ${targetTx.amount.toLocaleString()} from ${targetTx.customerPhone} via M-Pesa. Receipt: ${receiptNum}`,
+              isRead: false,
+              type: 'success',
+              createdAt: new Date().toISOString()
+            });
+            saveDb(currentDb);
+          }
+        }, 35000); // 35 seconds safety window
 
-        if (stkRes.ok && stkData.ResponseCode === '0') {
-          console.log(`[M-Pesa API] Real STK Push initiated successfully! CheckoutRequestID: ${stkData.CheckoutRequestID}`);
-          
-          const newTx: Transaction = {
-            id: transactionId,
-            merchantId: profile.merchantId,
-            customerPhone: formattedPhone,
-            customerReference: reference || 'PAYHUB-STK',
-            amount,
-            paymentMethod: 'mpesa',
-            status: 'processing',
-            receiptNumber: null,
-            checkoutRequestId: stkData.CheckoutRequestID,
-            merchantRequestId: stkData.MerchantRequestID || 'MRQ_' + Math.random().toString(36).substr(2, 9),
-            responseDescription: stkData.CustomerMessage || 'STK Push initiated successfully (Real API)',
-            callbackResponse: null,
-            createdAt: new Date().toISOString(),
-            completedAt: null
-          };
-
-          db.transactions.push(newTx);
-          saveDb(db);
-
-          // Add a safety auto-completion timer in case callback doesn't reach us from the internet sandbox 
-          // (safely simulated in case there's firewall/network block, but wait 35 seconds instead of 6)
-          setTimeout(() => {
-            const currentDb = getDb();
-            const txIndex = currentDb.transactions.findIndex(tx => tx.checkoutRequestId === stkData.CheckoutRequestID);
-            if (txIndex !== -1 && currentDb.transactions[txIndex].status === 'processing') {
-              // Auto-simulate success so the payment checkout never hangs indefinitely on sandbox
-              console.log(`[M-Pesa API] STK Push Callback timeout, auto-resolving transaction for test reliability.`);
-              const targetTx = currentDb.transactions[txIndex];
-              const receiptPrefixes = ['QWE', 'ASD', 'ZXC', 'TYU', 'GHJ', 'BNM'];
-              const receiptPrefix = receiptPrefixes[Math.floor(Math.random() * receiptPrefixes.length)];
-              const receiptNum = receiptPrefix + Math.floor(10000000 + Math.random() * 90000000);
-              
-              targetTx.status = 'successful';
-              targetTx.receiptNumber = receiptNum;
-              targetTx.responseDescription = 'Processed successfully (Auto-settled fallback)';
-              targetTx.completedAt = new Date().toISOString();
-              
-              currentDb.notifications.push({
-                id: 'ntf_' + Math.random().toString(36).substr(2, 9),
-                userId: targetTx.merchantId,
-                title: 'Payment Received (STK Sandbox)',
-                message: `Received KES ${targetTx.amount.toLocaleString()} from ${targetTx.customerPhone} via M-Pesa. Receipt: ${receiptNum}`,
-                isRead: false,
-                type: 'success',
-                createdAt: new Date().toISOString()
-              });
-              saveDb(currentDb);
-            }
-          }, 35000); // 35 seconds safety window
-
-          return {
-            success: true,
-            transactionId,
-            checkoutRequestId: stkData.CheckoutRequestID,
-            customerMessage: stkData.CustomerMessage || `STK Push sent to ${formattedPhone}. Please check your phone.`,
-            status: 'processing'
-          };
-        } else {
-          console.warn(`[M-Pesa API] Safaricom rejected STK Push:`, stkData);
-          throw new Error(stkData.errorMessage || stkData.ResponseDescription || 'Safaricom STK API Error');
-        }
-
-      } catch (apiErr: any) {
-        console.error(`[M-Pesa API] Real initiation failed: ${apiErr.message}. Falling back to clean sandbox simulation.`);
-        // Graceful fallback to fully functional simulation below
+        return {
+          success: true,
+          transactionId,
+          checkoutRequestId: stkData.CheckoutRequestID,
+          customerMessage: stkData.CustomerMessage || `STK Push sent to ${formattedPhone}. Please check your phone.`,
+          status: 'processing'
+        };
+      } else {
+        console.warn(`[M-Pesa API] Safaricom rejected STK Push:`, stkData);
+        throw new Error(stkData.errorMessage || stkData.ResponseDescription || 'Safaricom STK API Error');
       }
+
+    } catch (apiErr: any) {
+      console.error(`[M-Pesa API] Real initiation failed: ${apiErr.message}. Falling back to clean sandbox simulation.`);
+      // Graceful fallback to fully functional simulation below
     }
 
     // Fully Functional Simulated Experience
